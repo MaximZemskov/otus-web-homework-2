@@ -15,6 +15,21 @@ $ pip install requirements.txt
 $ python app.py -s https://habr.com/all/
 ```
 
+## Results
+```
+2018-05-10 - 2018-05-07
+компания: 36
+год: 30
+система: 29
+статья: 28
+работа: 27
+информация: 24
+код: 23
+тестирование: 23
+часть: 22
+разработка: 20
+```
+
 ### Command line arguments
 
 - `-s`, site address. *Required*.
