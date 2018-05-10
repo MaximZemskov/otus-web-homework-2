@@ -12,7 +12,7 @@ $ pip install requirements.txt
 
 ## Run
 ```bash
-$ python app.py -s https://example.com/
+$ python app.py -s https://habr.com/all/
 ```
 
 ### Command line arguments
