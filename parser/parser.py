@@ -64,5 +64,6 @@ def parse_page(raw_page, title_class, article_class, article_block_class,
         articles_info.append({
             'title': title_link.contents[0],
             'preview': text_block.text.replace('\r\n', ''),
+            'date': date
         })
     return articles_info
