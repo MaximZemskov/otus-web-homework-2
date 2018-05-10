@@ -1,17 +1,8 @@
 import argparse
-import requests
 
-
-def _fetch_page(url, pagination, page_num):
-    url_with_page = url + pagination.format(page_num) + '/'
-    return requests.get(url_with_page).text
-
-
-def fetch_raw_pages(url, pagination, pages):
-    raw_pages = []
-    for page_num in range(pages):
-        raw_pages.append(_fetch_page(url, pagination, page_num+1))
-    return raw_pages
+from parser.fetch import fetch_raw_pages
+from parser.parser import parse_page
+from parser.stat import calculate_word_frequency_stat, output_word_stat
 
 
 def main(args):
@@ -20,9 +11,16 @@ def main(args):
     pages = args.p
     pagination = args.pag
     raw_pages = fetch_raw_pages(url, pagination, pages)
-    print(raw_pages)
-
-
+    articles_info = []
+    for raw_page in raw_pages:
+        articles_info += parse_page(raw_page, title_class=args.tc,
+                                    article_class=args.ac,
+                                    article_block_class=args.ab,
+                                    time_block_class=args.tb)
+    word_stat = calculate_word_frequency_stat(
+        articles_info
+    )
+    output_word_stat(word_stat)
 
 
 if __name__ == '__main__':
@@ -36,6 +34,25 @@ if __name__ == '__main__':
                                                 'Example page{}/ or '
                                                 '?page={} . Default '
                                                 'page{}/')
+    parser.add_argument('--tc', '--title_class', nargs='?',
+                        default='post__title_link', help='CSS class of '
+                                                         'title . Default: '
+                                                         'post__title_link')
+    parser.add_argument('--ac', '--article_class', nargs='?',
+                        default='post__text', help='CSS class of '
+                                                   'title . Default: '
+                                                   'post__text')
+    parser.add_argument('--ab', '--article_block', nargs='?',
+                        default='post post_preview', help='CSS class of '
+                                                          'article block . '
+                                                          'Default: '
+                                                          'post post_preview')
+    parser.add_argument('--tb', '--time_block', nargs='?',
+                        default='post__time', help='CSS class of '
+                                                   'time block . '
+                                                   'Default: '
+                                                   'post__time')
+
     args = parser.parse_args()
     print(args)
     main(args)
