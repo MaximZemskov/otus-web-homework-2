@@ -1,8 +1,33 @@
 import collections
 import re
 import datetime
-
 from collections import defaultdict
+
+import pymorphy2
+from nltk import pos_tag
+
+
+_MORPH = pymorphy2.MorphAnalyzer()
+RUSSIAN_PATTERN = re.compile('[а-я]')
+ENGLISH_PATTERN = re.compile('[a-z]')
+
+
+def _normalize_word(word):
+    if RUSSIAN_PATTERN.match(word):
+        return _MORPH.parse(word)[0].normal_form
+    else:
+        return word
+
+
+def _is_noun(word):
+    if RUSSIAN_PATTERN.match(word):
+        p = _MORPH.parse(word)[0]
+        return 'NOUN' in p.tag
+    elif ENGLISH_PATTERN.match(word):
+        pos_info = pos_tag([word])
+        return pos_info[0][1] == 'NN'
+    else:
+        return False
 
 
 def calculate_word_frequency_stat(articles_info, min_word_len=3):
@@ -27,8 +52,8 @@ def calculate_word_frequency_stat(articles_info, min_word_len=3):
             ' ',
             words_string
         ).split()
-        week_words += [w.strip() for w in current_words if w and len(w) >=
-                       min_word_len]
+        week_words += [_normalize_word(w.strip()) for w in current_words if
+                       w and len(w) >= min_word_len and _is_noun(w)]
         if article_date < week_date:
             week_date = article_date - datetime.timedelta(days=7)
             words_weeks_list.append(week_words)

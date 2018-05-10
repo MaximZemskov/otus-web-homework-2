@@ -19,7 +19,8 @@ def main(args):
                                     time_block_class=args.tb)
     word_stat = calculate_word_frequency_stat(articles_info)
     for idx in range(len(word_stat)):
-        output_word_stat(word_stat[idx]['words'], word_stat[idx]['week'])
+        output_word_stat(word_stat[idx]['words'], word_stat[idx]['week'],
+                         top_size=args.t)
 
 
 if __name__ == '__main__':
@@ -27,9 +28,12 @@ if __name__ == '__main__':
     parser.add_argument('-s', '-site', help='Site address. Example: '
                                             'https://habr.com/all/')
     parser.add_argument('--p', '--pages', type=int, nargs='?', help='Numer '
-                                                                    'of ' 
+                                                                    'of '
                                                                     'pages. \
         Default 10', const=10, default=10)
+    parser.add_argument('--t', '--top_num', type=int, nargs='?',
+                        help='Numer of top words. Default 10', const=10,
+                        default=10)
     parser.add_argument('--pag', '--pagination', nargs='?',
                         default='page{}/', help='Pagination uri. '
                                                 'Example page{}/ or '
